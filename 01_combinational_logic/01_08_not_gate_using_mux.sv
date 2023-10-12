@@ -17,11 +17,14 @@ module not_gate_using_mux
     output o
 );
 
-  // TODO
-
-  // Implement not gate using instance(s) of mux,
-  // constants 0 and 1, and wire connections
-
+  /*
+   * TODO
+   *
+   * Implement not gate using instance(s) of mux,
+   * constants 0 and 1, and wire connections
+   */
+  wire d = 1'd1;
+  mux not_gate( .d0(d), .d1(~d), .sel(i), .y(o) );
 
 endmodule
 

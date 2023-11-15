@@ -6,10 +6,11 @@ where iverilog > nul 2>&1
 
 if errorlevel 1 (
     if exist C:\iverilog\bin\iverilog.exe (
-        for %%f in (*.sv) do (
-            C:\iverilog\bin\iverilog -g2005-sv %%f >> log.txt 2>&1
-            C:\iverilog\bin\vvp a.out >> log.txt 2>&1
-            rem C:\iverilog\gtkwave\bin\gtkwave dump.vcd
+        C:\iverilog\bin\iverilog -g2005-sv -I testbenches testbenches/*.sv black_boxes/*.sv *.sv >> log.txt 2>&1
+        C:\iverilog\bin\vvp a.out >> log.txt 2>&1
+
+        if exist dump.vcd (
+            C:\iverilog\gtkwave\bin\gtkwave dump.vcd --script gtkwave.tcl
         )
     ) else (
         echo ERROR: iverilog.exe is not in the path, is not in the default location C:\iverilog\bin or cannot be run.
@@ -18,14 +19,16 @@ if errorlevel 1 (
         exit /b 1
     )
 ) else (
-    for %%f in (*.sv) do (
-        iverilog -g2005-sv %%f >> log.txt 2>&1
-        vvp a.out >> log.txt 2>&1
-        rem gtkwave dump.vcd
+    iverilog -g2005-sv -I testbenches testbenches/*.sv black_boxes/*.sv *.sv >> log.txt 2>&1
+    vvp a.out >> log.txt 2>&1
+
+    if exist dump.vcd (
+        gtkwave dump.vcd --script gtkwave.tcl
     )
 )
 
 del /q a.out
+rem del /q dump.vcd
 
 findstr PASS  log.txt
 findstr FAIL  log.txt
